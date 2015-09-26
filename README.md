@@ -21,15 +21,11 @@ check ports 20 to (20+10)
 
 check port 25
 
-enjoy :)
-
-type
-
 	outports -h
 
 to see documentation on terminal
 
-###NOTE
+##NOTE
 
 it works asynchronously so the output will not always be in order, but it is MUCH MUCH faster.
 
