@@ -17,9 +17,14 @@ func main() {
 	)
 	log.SetPrefix("outPorts: ")
 	if len(os.Args) < 2 {
-		fmt.Fprintln(os.Stderr, "No port range specified, using range 1-65535")
+		fmt.Fprintln(os.Stderr, "No port range specified, using range 1-65535, \"outPorts -h\" for more info")
 		min = 1
 		max = 65535
+	} else if strings.ContainsRune(os.Args[1], 'h')  {
+		fmt.Fprintln(os.Stderr, "Usage of outPorts:")
+		fmt.Fprintln(os.Stderr, "  outPorts [-u] min[-max]")
+		fmt.Fprintln(os.Stderr, "      -u    use udp instead of tcp")
+		return
 	} else if i := strings.Index(os.Args[1], "-"); i != -1 {
 		if tmp, err := strconv.ParseUint(os.Args[1][:i], 10, 16); err != nil {
 			log.Println(err)
@@ -42,7 +47,7 @@ func main() {
 			max = min
 		}
 	}
-	d := net.Dialer{Timeout: time.Second*1}
+	d := net.Dialer{Timeout: time.Second * 1}
 	wg := sync.WaitGroup{}
 	check := func(port uint16) {
 		defer wg.Done()
@@ -58,7 +63,7 @@ func main() {
 	for ; min <= max; min++ {
 		wg.Add(1)
 		go check(min)
-		time.Sleep(time.Millisecond*3)
+		time.Sleep(time.Millisecond * 3)
 	}
 	wg.Wait()
 }
