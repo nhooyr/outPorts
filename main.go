@@ -16,6 +16,7 @@ import (
 
 func main() {
 	log.SetPrefix("outPorts: ")
+	log.SetFlags(0)
 	var min, max uint16
 	if len(os.Args) < 2 {
 		min = 1
