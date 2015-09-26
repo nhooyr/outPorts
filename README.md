@@ -8,15 +8,27 @@
 
 	outPorts min[-max]
 
-eg for the port range 23-40
+for port ranges
 
-	outPorts 23-40
+	outPorts 20-30
 
-or only for port 25
+you can also do
+
+	outPorts 20-10
+
+(from 20 to 20+10)
+
+for ports
 
 	outPorts 25
 
 enjoy :)
+
+type
+
+	outports -h
+
+to see documentation on terminal
 
 ###NOTE
 
