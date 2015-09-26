@@ -25,7 +25,7 @@ check ports 20 to (20+10)
 
 check port 25
 
-	outports -h
+	outPorts -h
 
 to see documentation on terminal
 
