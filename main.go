@@ -40,7 +40,7 @@ func main() {
 			max = min
 		}
 	}
-	d := net.Dialer{Timeout: time.Second * 1}
+	d := net.Dialer{Timeout: time.Second * 3}
 	wg := sync.WaitGroup{}
 	check := func(port uint16) {
 		defer wg.Done()
