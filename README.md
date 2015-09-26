@@ -8,19 +8,18 @@
 
 	outPorts min[-max]
 
-for port ranges
-
+### EXAMPLES
 	outPorts 20-30
 
-you can also do
+check ports 20 to 30
 
 	outPorts 20-10
 
-(from 20 to 20+10)
-
-for ports
+check ports 20 to (20+10)
 
 	outPorts 25
+
+check port 25
 
 enjoy :)
 

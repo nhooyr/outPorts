@@ -24,11 +24,11 @@ func main() {
 	} else if strings.ContainsRune(os.Args[1], 'h') {
 		fmt.Fprintln(os.Stderr, `Usage of outPorts:
   outPorts 20-30
-        checks from port 20-30
+        check from port 20 to 30
   outPorts 20-10
-        checks from port 20-(20+10)
+        check from port 20 to (20+10)
   outPorts 25
-        checks port 25`)
+        check port 25`)
 		return
 	} else if i := strings.Index(os.Args[1], "-"); i != -1 {
 		if tmp, err := strconv.ParseUint(os.Args[1][:i], 10, 16); err != nil {
