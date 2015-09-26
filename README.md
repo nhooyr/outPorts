@@ -9,6 +9,10 @@
 	outPorts min[-max]
 
 ### EXAMPLES
+	outPorts
+
+check ports 1 to 65535
+
 	outPorts 20-30
 
 check ports 20 to 30

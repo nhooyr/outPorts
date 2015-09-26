@@ -23,6 +23,8 @@ func main() {
 		max = 65535
 	} else if strings.ContainsRune(os.Args[1], 'h') {
 		fmt.Fprintln(os.Stderr, `Usage of outPorts:
+  outPorts
+        check from port 1 to 65535
   outPorts 20-30
         check from port 20 to 30
   outPorts 20-10
