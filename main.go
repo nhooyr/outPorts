@@ -21,6 +21,13 @@ func main() {
 		fmt.Fprintln(os.Stderr, "No port range specified, using range 1-65535, \"outPorts -h\" for more info")
 		min = 1
 		max = 65535
+	} else if strings.ContainsRune(os.Args[1], 'h') {
+		fmt.Fprintln(os.Stderr, "usage: outPorts min[-max]")
+		fmt.Fprintln(os.Stderr, "   for port ranges")
+		fmt.Fprintln(os.Stderr, "      outPorts 20-30")
+		fmt.Fprintln(os.Stderr, "   for ports")
+		fmt.Fprintln(os.Stderr, "      outPorts 25")
+		return
 	} else if i := strings.Index(os.Args[1], "-"); i != -1 {
 		if tmp, err := strconv.ParseUint(os.Args[1][:i], 10, 16); err != nil {
 			log.Println(err)
