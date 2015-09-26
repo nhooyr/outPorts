@@ -18,7 +18,6 @@ func main() {
 	log.SetPrefix("outPorts: ")
 	var min, max uint16
 	if len(os.Args) < 2 {
-		fmt.Fprintln(os.Stderr, "No port range specified, using range 1-65535, \"outPorts -h\" for more info")
 		min = 1
 		max = 65535
 	} else if strings.ContainsRune(os.Args[1], 'h') {
