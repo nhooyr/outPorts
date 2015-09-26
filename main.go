@@ -22,14 +22,13 @@ func main() {
 		min = 1
 		max = 65535
 	} else if strings.ContainsRune(os.Args[1], 'h') {
-		fmt.Fprintln(os.Stderr, `usage: outPorts min[-max]
-   For port ranges
-      outPorts 20-30
-   You can also do
-      outPorts 20-10
-   (from 20 to 20+10)
-   For ports
-      outPorts 25`)
+		fmt.Fprintln(os.Stderr, `Usage of outPorts:
+  outPorts 20-30
+        checks from port 20-30
+  outPorts 20-10
+        checks from port 20-(20+10)
+  outPorts 25
+        checks port 25`)
 		return
 	} else if i := strings.Index(os.Args[1], "-"); i != -1 {
 		if tmp, err := strconv.ParseUint(os.Args[1][:i], 10, 16); err != nil {
