@@ -12,19 +12,12 @@ import (
 )
 
 func main() {
-	var (
-		min, max uint16
-	)
 	log.SetPrefix("outPorts: ")
+	var min, max uint16
 	if len(os.Args) < 2 {
 		fmt.Fprintln(os.Stderr, "No port range specified, using range 1-65535, \"outPorts -h\" for more info")
 		min = 1
 		max = 65535
-	} else if strings.ContainsRune(os.Args[1], 'h')  {
-		fmt.Fprintln(os.Stderr, "Usage of outPorts:")
-		fmt.Fprintln(os.Stderr, "  outPorts [-u] min[-max]")
-		fmt.Fprintln(os.Stderr, "      -u    use udp instead of tcp")
-		return
 	} else if i := strings.Index(os.Args[1], "-"); i != -1 {
 		if tmp, err := strconv.ParseUint(os.Args[1][:i], 10, 16); err != nil {
 			log.Println(err)
@@ -54,10 +47,10 @@ func main() {
 		addr := fmt.Sprintf("portquiz.net:%d", port)
 		c, err := d.Dial("tcp", addr)
 		if err != nil {
-			fmt.Println("failure on port", port)
+			fmt.Println("\033[31m\033[01mfailure\033[00m on port", port)
 		} else {
 			c.Close()
-			fmt.Println("success on port", port)
+			fmt.Println("\033[32m\033[01msuccess\033[00m on port", port)
 		}
 	}
 	for ; min <= max; min++ {
