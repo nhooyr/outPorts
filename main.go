@@ -90,17 +90,19 @@ func main() {
 	}
 	d := net.Dialer{Timeout: time.Second * 3}
 	wg := sync.WaitGroup{}
+	out := make(chan string)
 	check := func(port uint16) {
 		defer wg.Done()
 		addr := fmt.Sprintf("portquiz.net:%d", port)
 		c, err := d.Dial("tcp", addr)
 		if err != nil {
-			fmt.Printf("\033[31m\033[01m%s\033[00m on port %d\n", "failure", port)
+			out <- fmt.Sprintf("\033[31m\033[01m%s\033[00m on port %d\n", "failure", port)
 		} else {
 			c.Close()
-			fmt.Printf("\033[32m\033[01m%s\033[00m on port %d\n", "success", port)
+			out <- fmt.Sprintf("\033[32m\033[01m%s\033[00m on port %d\n", "success", port)
 		}
 	}
+	go printLoop(out)
 	for ; min <= max; min++ {
 		wg.Add(1)
 		go check(min)
@@ -111,4 +113,11 @@ func main() {
 	}
 	wg.Wait()
 	cleanup()
+}
+
+// keeps output from writing over each other; actually happens when its outputting so fast
+func printLoop(out <-chan string) {
+	for {
+		fmt.Print(<-out)
+	}
 }
