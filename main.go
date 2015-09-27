@@ -5,13 +5,10 @@ import (
 	"log"
 	"net"
 	"os"
-	"os/signal"
 	"strconv"
 	"strings"
 	"sync"
-	"syscall"
 	"time"
-	"unsafe"
 )
 
 func main() {
@@ -57,37 +54,6 @@ func main() {
 			max = min
 		}
 	}
-	// hide cursor
-	os.Stdin.Write([]byte{27, 91, 63, 50, 53, 108})
-	/// save current termios
-	var old syscall.Termios
-	if _, _, err := syscall.Syscall6(syscall.SYS_IOCTL, os.Stdin.Fd(), ioctlReadTermios, uintptr(unsafe.Pointer(&old)), 0, 0, 0); err != 0 {
-		log.Fatalln("not a terminal, got:", err)
-	}
-	// capture signals
-	sigs := make(chan os.Signal)
-	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-	cleanup := func() {
-		// make cursor visible
-		os.Stdin.Write([]byte{27, 91, 51, 52, 104, 27, 91, 63, 50, 53, 104})
-		// set tty to normal
-		if _, _, err := syscall.Syscall6(syscall.SYS_IOCTL, os.Stdin.Fd(), ioctlWriteTermios, uintptr(unsafe.Pointer(&old)), 0, 0, 0); err != 0 {
-			log.Fatal(err)
-		}
-	}
-	go func() {
-		<-sigs
-		// restore text to normal
-		os.Stdout.Write([]byte{27, 91, 48, 109})
-		cleanup()
-		os.Exit(0)
-	}()
-	// set raw mode
-	raw := old
-	raw.Lflag &^= syscall.ECHO | syscall.ICANON
-	if _, _, err := syscall.Syscall6(syscall.SYS_IOCTL, os.Stdin.Fd(), ioctlWriteTermios, uintptr(unsafe.Pointer(&raw)), 0, 0, 0); err != 0 {
-		log.Fatal(err)
-	}
 	d := net.Dialer{Timeout: time.Second * 3}
 	wg := sync.WaitGroup{}
 	out := make(chan string)
@@ -97,10 +63,10 @@ func main() {
 		addr := fmt.Sprintf("portquiz.net:%d", port)
 		c, err := d.Dial("tcp", addr)
 		if err != nil {
-			out <- fmt.Sprintf("\033[31m\033[01m%s\033[00m on port %d\n", "failure", port)
+			out <- fmt.Sprintf("\033[31m\033[1m%s\033[0m on port %d\n", "failure", port)
 		} else {
 			c.Close()
-			out <- fmt.Sprintf("\033[32m\033[01m%s\033[00m on port %d\n", "success", port)
+			out <- fmt.Sprintf("\033[32m\033[1m%s\033[0m on port %d\n", "success", port)
 		}
 	}
 	go printLoop(out, exit)
@@ -114,7 +80,6 @@ func main() {
 	}
 	wg.Wait()
 	<-exit
-	cleanup()
 }
 
 // keeps output from writing over each other; actually happens when its outputting so fast
@@ -122,7 +87,7 @@ func printLoop(out <-chan string, exit chan<- struct{}) {
 	for {
 		fmt.Print(<-out)
 		select {
-		case exit<-struct{}{}:
+		case exit <- struct{}{}:
 		default:
 			// not exiting
 		}
