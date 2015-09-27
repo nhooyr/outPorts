@@ -57,7 +57,6 @@ func main() {
 	d := net.Dialer{Timeout: time.Second * 3}
 	wg := sync.WaitGroup{}
 	out := make(chan string)
-	exit := make(chan struct{})
 	check := func(port uint16) {
 		defer wg.Done()
 		addr := fmt.Sprintf("portquiz.net:%d", port)
@@ -69,6 +68,7 @@ func main() {
 			out <- fmt.Sprintf("\033[32m\033[1m%s\033[0m on port %d\n", "success", port)
 		}
 	}
+	exit := make(chan struct{})
 	go printLoop(out, exit)
 	for ; min <= max; min++ {
 		wg.Add(1)
