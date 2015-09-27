@@ -91,6 +91,7 @@ func main() {
 	d := net.Dialer{Timeout: time.Second * 3}
 	wg := sync.WaitGroup{}
 	out := make(chan string)
+	exit := make(chan struct{})
 	check := func(port uint16) {
 		defer wg.Done()
 		addr := fmt.Sprintf("portquiz.net:%d", port)
@@ -102,7 +103,7 @@ func main() {
 			out <- fmt.Sprintf("\033[32m\033[01m%s\033[00m on port %d\n", "success", port)
 		}
 	}
-	go printLoop(out)
+	go printLoop(out, exit)
 	for ; min <= max; min++ {
 		wg.Add(1)
 		go check(min)
@@ -112,12 +113,18 @@ func main() {
 		time.Sleep(time.Millisecond * 3)
 	}
 	wg.Wait()
+	<-exit
 	cleanup()
 }
 
 // keeps output from writing over each other; actually happens when its outputting so fast
-func printLoop(out <-chan string) {
+func printLoop(out <-chan string, exit chan<- struct{}) {
 	for {
 		fmt.Print(<-out)
+		select {
+		case exit<-struct{}{}:
+		default:
+			// not exiting
+		}
 	}
 }
