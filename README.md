@@ -1,5 +1,9 @@
 # outPorts
 
+## Description
+
+uses [portquiz](http://portquiz.net) to check outbound ports (you should check it out!)
+
 ## INSTALL
 
 	go get github.com/nhooyr/outPorts
@@ -27,10 +31,8 @@ check port 25
 
 	outPorts -h
 
-to see documentation on terminal
+to see documentation on the terminal
 
 ##NOTE
 
-it works asynchronously so the output will not always be in order, but it is MUCH MUCH faster.
-
-##SPECIAL THANKS TO CREATOR OF PORTQUIZ.NET!
+it works asynchronously so the output will not always be in order, but it is very fast.
