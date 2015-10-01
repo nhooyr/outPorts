@@ -4,6 +4,8 @@
 
 uses [portquiz](http://portquiz.net) to check outbound ports (you should check it out!)
 
+## caution, work in progress atm
+
 ## INSTALL
 
 	go get github.com/nhooyr/outPorts
@@ -15,7 +17,7 @@ uses [portquiz](http://portquiz.net) to check outbound ports (you should check i
 ### EXAMPLES
 check from port 1 to 65535
 
-    outPorts
+    outPorts all
 
 check from port 20 to 30 and then 40-50
 

@@ -88,7 +88,10 @@ func main() {
 			printFailure = true
 			arg = arg[0 : len(arg)-1]
 		}
-		if i := strings.Index(arg, "-"); i != -1 {
+		if arg == "all" {
+			min = 1
+			max = 65355
+		} else if i := strings.Index(arg, "-"); i != -1 {
 			if tmp, err := strconv.ParseUint(arg[:i], 10, 16); err != nil {
 				log.Fatal(err)
 			} else {
@@ -132,6 +135,7 @@ func main() {
 				i = 0
 			}
 			i++
+			time.Sleep(time.Millisecond*15)
 		}
 		for i := 0; i < w; i++ {
 			close(in[i])
