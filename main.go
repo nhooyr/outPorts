@@ -40,20 +40,22 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
 		flag.PrintDefaults()
 		os.Stderr.WriteString(`Examples
-  outPorts
-        check from port 1 to 65535
-  outPorts 20-30 40-50
-        check from port 20 to 30 and then 40-50
-  outPorts 20-10 40-10
-        check from port 20 to 10 and then 40 to 10
-  outPorts 25
-        check port 25
-  outPorts 20-25f
-        check from port 20-25 and only display failure (carries onto next port(s))
-  outPorts 20-25s
-        check from port 20-25 and only display success (carries onto next port(s))
-  outPorts 20-25b
-        check from port 20-25 and display both (needed to reset)
+  check from ports 1 to 65535
+        outPorts all
+  check from ports 20-30 and then 40-50
+        outPorts 20-30 40-50
+  check from ports 20-10 and then 40-10
+        outPorts 20-10 40-10
+  check port 25
+        outPorts 25
+  check from ports 1-65535 and only display failure
+        outPorts allf
+  check from ports 20-25 and only display success
+        outPorts 20-25s
+  check from ports 20-25 and display only success, 
+  then ports 30-35 and only display failure, 
+  then ports 40-50 and display both. 
+        outPorts 20-25s 30-35f 40-50
 `)
 	}
 	color := flag.Bool("c", false, "add color/bold for success/failure")
@@ -81,10 +83,6 @@ func main() {
 			arg = arg[0 : len(arg)-1]
 		case 'f':
 			printSuccess = false
-			printFailure = true
-			arg = arg[0 : len(arg)-1]
-		case 'b':
-			printSuccess = true
 			printFailure = true
 			arg = arg[0 : len(arg)-1]
 		}
@@ -138,6 +136,8 @@ func main() {
 			close(in[i])
 		}
 		wg.Wait()
+		printSuccess = true
+		printFailure = true
 	}
 	close(out)
 	<-exit
