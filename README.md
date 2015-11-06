@@ -39,7 +39,7 @@ check from port 20-25 and only display success (carries onto next port(s))
 
 check from port 20-25 and display failure/success (needed to reset only failure/success)
 
-    outPorts 20-25a
+    outPorts 20-25b
 
 to see documentation on the terminal
 
