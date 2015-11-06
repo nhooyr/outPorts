@@ -13,25 +13,37 @@ uses [portquiz](http://portquiz.net) to check outbound ports (you should check i
 	outPorts min[-max]
 
 ### EXAMPLES
-	outPorts
+check from port 1 to 65535
 
-check ports 1 to 65535
+    outPorts all
 
-	outPorts 20-30
+check from port 20 to 30 and then 40-50
 
-check ports 20 to 30
+    outPorts 20-30 40-50
 
-	outPorts 20-10
+check from port 20 to 10 and then 40 to 10
 
-check ports 20 to (20+10)
-
-	outPorts 25
+    outPorts 20-10 40-10
 
 check port 25
 
-	outPorts -h
+    outPorts 25
+
+check from port 20-25 and only display failure (carries onto next port(s))
+
+    outPorts 20-25f
+
+check from port 20-25 and only display success (carries onto next port(s))
+
+    outPorts 20-25s
+
+check from port 20-25 and display failure/success (needed to reset only failure/success)
+
+    outPorts 20-25a
 
 to see documentation on the terminal
+
+    outPorts -h
 
 ##NOTE
 
