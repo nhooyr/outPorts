@@ -12,11 +12,6 @@ import (
 	"time"
 )
 
-type portRange struct {
-	min uint16
-	max uint16
-}
-
 const (
 	RED    = "\033[31m"
 	GREEN  = "\033[32m"
