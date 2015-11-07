@@ -9,7 +9,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"time"
 )
 
 type portRange struct {
@@ -28,7 +27,7 @@ var (
 	successMsg, failureMsg     string
 	printSuccess, printFailure = true, true
 	wg                         = sync.WaitGroup{}
-	d                          = net.Dialer{Timeout: time.Second * 3}
+	d                          = net.Dialer{}
 	out                        = make(chan string)
 	exit                       = make(chan struct{})
 )
@@ -58,7 +57,9 @@ func main() {
         outPorts 20-25s 30-35f 40-50
 `)
 	}
+	var w int
 	color := flag.Bool("c", false, "add color/bold for success/failure")
+	flag.IntVar(&w, "w", 1024, "number of workers to use (use less if you're getting false positives)")
 	flag.Parse()
 	if *color == true {
 		successMsg = GREEN + BOLD + "%s" + NORMAL
@@ -67,15 +68,9 @@ func main() {
 		successMsg = "%s"
 		failureMsg = "%s"
 	}
-	var (
-		min, max uint16
-		w        int
-	)
 	go printLoop()
-	for _, arg := range os.Args[1:] {
-		if arg == "-c" {
-			continue
-		}
+	for _, arg := range flag.Args() {
+		var min, max uint16
 		switch arg[len(arg)-1] {
 		case 's':
 			printFailure = false
@@ -113,9 +108,6 @@ func main() {
 				max = min
 			}
 		}
-		if w = int((max - min + 1)); w > 1024 {
-			w = 1024
-		}
 		wg.Add(w)
 		in := make([]chan uint16, w)
 		for i := 0; i < w; i++ {
@@ -146,7 +138,7 @@ func main() {
 // keeps output from writing over each other; actually happens when its outputting so fast
 func printLoop() {
 	for m := range out {
-		fmt.Print(m)
+		fmt.Println(m)
 	}
 	exit <- struct{}{}
 }
@@ -158,12 +150,12 @@ func worker(in <-chan uint16) {
 		c, err := d.Dial("tcp", addr)
 		if err != nil {
 			if printFailure {
-				out <- fmt.Sprintf(failureMsg+" on port %d\n", "failure", port)
+				out <- fmt.Sprintf(failureMsg+" on port %d", "failure", port)
 			}
 		} else {
 			if printSuccess {
 				c.Close()
-				out <- fmt.Sprintf(successMsg+" on port %d\n", "success", port)
+				out <- fmt.Sprintf(successMsg+" on port %d", "success", port)
 			}
 		}
 	}

@@ -4,17 +4,16 @@
 
 Uses [portquiz](http://portquiz.net) to check outbound ports (you should check it out!)
 
-It's very fast because its asynchronous so it will not give ports in order.
-
 ## INSTALL
 
 	go get github.com/nhooyr/outPorts
 
 ## USAGE
 
-	outPorts [-c] min[-max][sf]...
+	outPorts [-w n][-c] min[-max][sf]...
 
 The flag -c allows for color/bold output which makes it easier to see.
+The flag -w allows you to change the number of workers used (concurrent TCP requests), so if you're getting false positives, use less.
 
 ### EXAMPLES
 check from ports 1 to 65535
