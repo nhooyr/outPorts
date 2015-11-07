@@ -10,10 +10,11 @@ Uses [portquiz](http://portquiz.net) to check outbound ports (you should check i
 
 ## USAGE
 
-	outPorts [-w n][-c] min[-max][sf]...
+	outPorts [-t n][-w n][-c] min[-max][sf]...
 
+The flag -t allows you to change the timeout for each connection in seconds, default is 0.
+The flag -w allows you to change the number of workers used (concurrent TCP requests), so if you're getting false positives, use less. Default is 1024.
 The flag -c allows for color/bold output which makes it easier to see.
-The flag -w allows you to change the number of workers used (concurrent TCP requests), so if you're getting false positives, use less.
 
 ### EXAMPLES
 check from ports 1 to 65535

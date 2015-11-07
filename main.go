@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 )
 
 type portRange struct {
@@ -57,17 +58,23 @@ func main() {
         outPorts 20-25s 30-35f 40-50
 `)
 	}
-	var w int
-	color := flag.Bool("c", false, "add color/bold for success/failure")
-	flag.IntVar(&w, "w", 1024, "number of workers to use (use less if you're getting false positives)")
+	var (
+		w int
+		t int64
+		c bool
+	)
+	flag.BoolVar(&c, "c", false, "add color/bold for success/failure")
+	flag.IntVar(&w, "w", 1024, "number of workers to use")
+	flag.Int64Var(&t, "t", 0, "timeout for each connection in seconds")
 	flag.Parse()
-	if *color == true {
+	if c == true {
 		successMsg = GREEN + BOLD + "%s" + NORMAL
 		failureMsg = RED + BOLD + "%s" + NORMAL
 	} else {
 		successMsg = "%s"
 		failureMsg = "%s"
 	}
+	d.Timeout = time.Duration(t)*time.Second
 	go printLoop()
 	for _, arg := range flag.Args() {
 		var min, max uint16
