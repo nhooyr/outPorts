@@ -25,7 +25,7 @@ var (
 	wg                         = sync.WaitGroup{}
 	d                          = net.Dialer{}
 	out                        = make(chan string)
-	exit                       = make(chan struct{})
+	done                       = make(chan struct{})
 )
 
 func main() {
@@ -60,7 +60,7 @@ func main() {
 	)
 	flag.BoolVar(&c, "c", false, "add color/bold for success/failure")
 	flag.IntVar(&w, "w", 1024, "number of workers to use")
-	flag.Int64Var(&t, "t", 0, "timeout for each connection in seconds")
+	flag.Int64Var(&t, "t", 3, "timeout for each connection in seconds")
 	flag.Parse()
 	if c == true {
 		successMsg = GREEN + BOLD + "%s" + NORMAL
@@ -69,7 +69,7 @@ func main() {
 		successMsg = "%s"
 		failureMsg = "%s"
 	}
-	d.Timeout = time.Duration(t)*time.Second
+	d.Timeout = time.Duration(t) * time.Second
 	go printLoop()
 	for _, arg := range flag.Args() {
 		var min, max uint16
@@ -134,7 +134,7 @@ func main() {
 		printFailure = true
 	}
 	close(out)
-	<-exit
+	<-done
 }
 
 // keeps output from writing over each other; actually happens when its outputting so fast
@@ -142,7 +142,7 @@ func printLoop() {
 	for m := range out {
 		fmt.Println(m)
 	}
-	exit <- struct{}{}
+	done <- struct{}{}
 }
 
 func worker(in <-chan uint16) {
@@ -152,12 +152,12 @@ func worker(in <-chan uint16) {
 		c, err := d.Dial("tcp", addr)
 		if err != nil {
 			if printFailure {
-				out <- fmt.Sprintf(failureMsg+" on port %d", "failure", port)
+				out <- fmt.Sprintf(failureMsg+" on port %d %s", "failure", port, err)
 			}
 		} else {
+			c.Close()
 			if printSuccess {
-				c.Close()
-				out <- fmt.Sprintf(successMsg+" on port %d", "success", port)
+				out <- fmt.Sprintf(successMsg+" on port %d %s", "success", port, err)
 			}
 		}
 	}

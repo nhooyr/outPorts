@@ -4,6 +4,8 @@
 
 Uses [portquiz](http://portquiz.net) to check outbound ports (you should check it out!)
 
+__note: abandoned and has bugs__
+
 ## INSTALL
 
 	go get github.com/nhooyr/outPorts
