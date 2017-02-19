@@ -157,7 +157,7 @@ func worker(in <-chan uint16) {
 		} else {
 			c.Close()
 			if printSuccess {
-				out <- fmt.Sprintf(successMsg+" on port %d %s", "success", port, err)
+				out <- fmt.Sprintf(successMsg+" on port %d", "success", port)
 			}
 		}
 	}
